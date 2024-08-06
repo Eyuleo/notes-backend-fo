@@ -36,11 +36,13 @@ app.get('/api/notes', (request, response) => {
 })
 
 app.get('/api/notes/:id', (request, response) => {
-	const id = +request.params.id
-	const note = notes.find((n) => n.id === id)
-	note
-		? response.json(note)
-		: response.status(404).send({ message: 'not found' })
+	Note.findById(request.params.id).then((note) => {
+		if (note) {
+			response.json(note)
+		} else {
+			response.status(404).send({ error: 'note not found' })
+		}
+	})
 })
 
 app.post('/api/notes', (request, response) => {
@@ -52,15 +54,13 @@ app.post('/api/notes', (request, response) => {
 		})
 	}
 
-	const note = {
+	const note = new Note({
 		content: body.content,
 		important: Boolean(body.important) || false,
-		id: generateId(),
-	}
-
-	notes = notes.concat(note)
-
-	response.json(note)
+	})
+	note.save().then((savedNote) => {
+		response.json(savedNote)
+	})
 })
 
 app.delete('/api/notes/:id', (request, response) => {
