@@ -19,16 +19,6 @@ const noteSchema = new mongoose.Schema({
 
 const Note = mongoose.model('Note', noteSchema)
 
-const note = new Note({
-	content: 'do u fill like urself today?',
-	important: true,
-})
-
-// note.save().then((res) => {
-// 	console.log('note saved', res.toJSON())
-// 	mongoose.connection.close()
-// })
-
 Note.find({}).then((res) => {
 	res.forEach((note) => {
 		console.log(note)
